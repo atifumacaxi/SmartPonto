@@ -8,11 +8,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY backend/main.py .
-COPY backend/app /app/app
-COPY backend/requirements.txt .
+COPY backend/ .
+COPY start_server.py .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p uploads
 
 EXPOSE 8000
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "start_server.py"]
