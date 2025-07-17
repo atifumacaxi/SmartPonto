@@ -4,7 +4,7 @@ from datetime import datetime, date
 from typing import List, Tuple
 from app.models.monthly_target import MonthlyTarget
 from app.models.time_entry import TimeEntry
-from app.schemas.monthly_target import MonthlyTargetCreate, MonthlyTargetUpdate, MonthlyTargetWithProgress
+from app.schemas import MonthlyTargetCreate, MonthlyTargetUpdate, MonthlyTargetWithProgress
 import calendar
 
 class MonthlyTargetService:
