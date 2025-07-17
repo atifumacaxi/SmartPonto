@@ -21,6 +21,8 @@ interface MonthlyTargetWithProgress {
     id: number;
     year: number;
     month: number;
+    start_day: number;
+    end_day: number;
     target_hours: number;
   };
   current_hours: number;
@@ -147,9 +149,14 @@ const Dashboard: React.FC = () => {
         <div className="mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Target Progress - {monthNames[currentTarget.target.month - 1]} {currentTarget.target.year}
-              </h2>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Target Progress - {monthNames[currentTarget.target.month - 1]} {currentTarget.target.year}
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Custom Range: {currentTarget.target.start_day} - {currentTarget.target.end_day}
+                </p>
+              </div>
               <Link
                 to="/targets"
                 className="text-sm text-primary-600 hover:text-primary-700 font-medium"

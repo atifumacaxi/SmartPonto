@@ -8,6 +8,8 @@ interface MonthlyTarget {
   target_hours: number;
   created_at: string;
   updated_at?: string;
+  start_day: number;
+  end_day: number;
 }
 
 interface MonthlyTargetWithProgress {
@@ -29,6 +31,8 @@ const MonthlyTargets: React.FC = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [targetHours, setTargetHours] = useState('');
+  const [startDay, setStartDay] = useState(1);
+  const [endDay, setEndDay] = useState(31);
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -71,6 +75,8 @@ const MonthlyTargets: React.FC = () => {
       await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/`, {
         year: parseInt(year.toString()),
         month: parseInt(month.toString()),
+        start_day: parseInt(startDay.toString()),
+        end_day: parseInt(endDay.toString()),
         target_hours: parseFloat(targetHours)
       });
 
@@ -78,6 +84,8 @@ const MonthlyTargets: React.FC = () => {
       setYear(new Date().getFullYear());
       setMonth(new Date().getMonth() + 1);
       setTargetHours('');
+      setStartDay(1);
+      setEndDay(31);
 
       fetchTargets();
       fetchCurrentTarget();
@@ -108,11 +116,15 @@ const MonthlyTargets: React.FC = () => {
 
     try {
       await axios.put(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/${editingTarget.id}`, {
-        target_hours: parseFloat(targetHours)
+        target_hours: parseFloat(targetHours),
+        start_day: parseInt(startDay.toString()),
+        end_day: parseInt(endDay.toString()),
       });
 
       setEditingTarget(null);
       setTargetHours('');
+      setStartDay(1);
+      setEndDay(31);
 
       fetchTargets();
       fetchCurrentTarget();
@@ -164,11 +176,15 @@ const MonthlyTargets: React.FC = () => {
   const startEdit = (target: MonthlyTarget) => {
     setEditingTarget(target);
     setTargetHours(target.target_hours.toString());
+    setStartDay(target.start_day);
+    setEndDay(target.end_day);
   };
 
   const cancelEdit = () => {
     setEditingTarget(null);
     setTargetHours('');
+    setStartDay(1);
+    setEndDay(31);
   };
 
   if (loading) {
@@ -240,7 +256,7 @@ const MonthlyTargets: React.FC = () => {
         </div>
 
         {showCreateForm && (
-          <form onSubmit={handleCreateTarget} className="space-y-4">
+          <form onSubmit={editingTarget ? handleUpdateTarget : handleCreateTarget} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
@@ -282,12 +298,38 @@ const MonthlyTargets: React.FC = () => {
                 />
               </div>
             </div>
+            <div className="flex gap-4">
+              <div>
+                <label className="block text-sm font-medium">Start Day</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={31}
+                  value={startDay}
+                  onChange={e => setStartDay(Number(e.target.value))}
+                  className="mt-1 block w-20 border rounded px-2 py-1"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">End Day</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={31}
+                  value={endDay}
+                  onChange={e => setEndDay(Number(e.target.value))}
+                  className="mt-1 block w-20 border rounded px-2 py-1"
+                  required
+                />
+              </div>
+            </div>
             <div className="flex justify-end">
               <button
                 type="submit"
                 className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                Create Target
+                {editingTarget ? 'Update Target' : 'Create Target'}
               </button>
             </div>
           </form>
@@ -322,20 +364,46 @@ const MonthlyTargets: React.FC = () => {
                         />
                         <span className="text-sm text-gray-600">hours</span>
                       </div>
-                      <div className="flex space-x-2">
-                        <button
-                          type="submit"
-                          className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
-                        >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          onClick={cancelEdit}
-                          className="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
-                        >
-                          Cancel
-                        </button>
+                      <div className="flex gap-2">
+                        <div>
+                          <label className="block text-sm font-medium">Start Day</label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={31}
+                            value={startDay}
+                            onChange={e => setStartDay(Number(e.target.value))}
+                            className="mt-1 block w-20 border rounded px-2 py-1"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium">End Day</label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={31}
+                            value={endDay}
+                            onChange={e => setEndDay(Number(e.target.value))}
+                            className="mt-1 block w-20 border rounded px-2 py-1"
+                            required
+                          />
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            type="submit"
+                            className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            onClick={cancelEdit}
+                            className="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -344,6 +412,9 @@ const MonthlyTargets: React.FC = () => {
                     <div>
                       <span className="font-medium">
                         {monthNames[target.month - 1]} {target.year}
+                      </span>
+                      <span className="ml-4 text-gray-600">
+                        {target.start_day} - {target.end_day}
                       </span>
                       <span className="ml-4 text-gray-600">{target.target_hours} hours</span>
                     </div>

@@ -89,13 +89,17 @@ class MonthlySummary(BaseModel):
 class MonthlyTargetBase(BaseModel):
     year: int
     month: int
+    start_day: int =1  # Default to1t day of month
+    end_day: int =31 # Default to last day of month
     target_hours: float
 
 class MonthlyTargetCreate(MonthlyTargetBase):
     pass
 
 class MonthlyTargetUpdate(BaseModel):
-    target_hours: float
+    start_day: Optional[int] = None
+    end_day: Optional[int] = None
+    target_hours: Optional[float] = None
 
 class MonthlyTarget(MonthlyTargetBase):
     id: int
