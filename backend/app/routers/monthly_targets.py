@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..models.user import User
-from ..models.monthly_target import MonthlyTarget
-from ..schemas.monthly_target import (
+from app.database import get_db
+from app.models.user import User
+from app.models.monthly_target import MonthlyTarget
+from app.schemas.monthly_target import (
     MonthlyTarget as MonthlyTargetSchema,
     MonthlyTargetCreate,
     MonthlyTargetUpdate,
     MonthlyTargetWithProgress
 )
-from ..auth import get_current_user
-from ..services.monthly_target_service import MonthlyTargetService
+from app.auth import get_current_user
+from app.services.monthly_target_service import MonthlyTargetService
 from typing import List
 
 router = APIRouter()

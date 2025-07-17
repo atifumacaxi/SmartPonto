@@ -2,9 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, date
 from typing import List, Tuple
-from ..models.monthly_target import MonthlyTarget
-from ..models.time_entry import TimeEntry
-from ..schemas.monthly_target import MonthlyTargetCreate, MonthlyTargetUpdate, MonthlyTargetWithProgress
+from app.models.monthly_target import MonthlyTarget
+from app.models.time_entry import TimeEntry
+from app.schemas.monthly_target import MonthlyTargetCreate, MonthlyTargetUpdate, MonthlyTargetWithProgress
 import calendar
 
 class MonthlyTargetService:
