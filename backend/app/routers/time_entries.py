@@ -5,7 +5,7 @@ from typing import List, Optional
 import os
 import uuid
 from ..database import get_db
-from ..models import User, TimeEntry
+from app.models import User, TimeEntry
 from ..schemas import TimeEntry as TimeEntrySchema, TimeEntryCreate, TimeEntryUpdate, PhotoUploadResponse, MonthlySummary, DailySummary
 from ..auth import get_current_user
 from ..ocr_service import OCRService
