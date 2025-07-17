@@ -15,7 +15,7 @@ app = FastAPI(
 )
 
 # Get allowed origins from environment variable or use defaults
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,https://smartponto-frontend.vercel.app").split(",")
 
 # Configure CORS
 app.add_middleware(
