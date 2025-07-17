@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
 from app.models.monthly_target import MonthlyTarget
-from app.schemas.monthly_target import (
+from ..schemas import (
     MonthlyTarget as MonthlyTargetSchema,
     MonthlyTargetCreate,
     MonthlyTargetUpdate,
