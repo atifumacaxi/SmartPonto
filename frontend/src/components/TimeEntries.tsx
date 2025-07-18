@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ManualTimeEntry from './ManualTimeEntry';
 
 interface TimeEntry {
   id: number;
@@ -117,10 +118,31 @@ const TimeEntries: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Time Entries</h1>
-        <p className="mt-2 text-gray-600">View and manage your time entries</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Time Entries</h1>
+          <p className="mt-2 text-gray-600">View and manage your time entries</p>
+        </div>
+        <button
+          onClick={() => {
+            // This will be handled by the ManualTimeEntry component
+            const addButton = document.querySelector('[title="Add Manual Time Entry"]') as HTMLButtonElement;
+            if (addButton) addButton.click();
+          }}
+          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add Entry</span>
+        </button>
       </div>
+
+      {/* Manual Time Entry Component */}
+      <ManualTimeEntry
+        onEntryAdded={fetchTimeEntries}
+        onClose={() => {}}
+      />
 
       {/* Month Selector */}
       <div className="mb-6">

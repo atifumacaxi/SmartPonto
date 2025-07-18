@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from datetime import datetime, date
+from datetime import datetime, date, time
 from typing import List, Optional
 import os
 import uuid
@@ -222,6 +222,93 @@ async def confirm_time_entry(
         total_hours=None,  # Will be calculated when end time is added
         photo_path=photo_path,
         extracted_text=extracted_text,
+        is_confirmed=True
+    )
+
+    db.add(time_entry)
+    db.commit()
+    db.refresh(time_entry)
+
+    return time_entry
+
+@router.post("/manual", response_model=TimeEntrySchema)
+async def create_manual_time_entry(
+    date: date = Form(...),
+    start_time: Optional[time] = Form(None),
+    end_time: Optional[time] = Form(None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Create a manual time entry without photo"""
+
+    # Convert time to datetime for the selected date
+    start_datetime = None
+    end_datetime = None
+
+    if start_time:
+        start_datetime = datetime.combine(date, start_time)
+    if end_time:
+        end_datetime = datetime.combine(date, end_time)
+
+    # Business rule: Cannot register both start_time and end_time at the same time
+    if start_datetime and end_datetime:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot register both start time and end time at the same time. Please register them separately."
+        )
+
+    # If only end_time is provided, check if there's a start_time for the same date
+    if not start_datetime and end_datetime:
+        existing_start_entry = db.query(TimeEntry).filter(
+            TimeEntry.user_id == current_user.id,
+            TimeEntry.date == date,
+            TimeEntry.start_time.isnot(None),
+            TimeEntry.end_time.is_(None)
+        ).first()
+
+        if not existing_start_entry:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot register end time without a start time for this date. Please register a start time first."
+            )
+
+        # Update the existing entry with the end time
+        existing_start_entry.end_time = end_datetime
+
+        # Calculate total hours
+        if existing_start_entry.start_time and end_datetime > existing_start_entry.start_time:
+            time_diff = end_datetime - existing_start_entry.start_time
+            existing_start_entry.total_hours = time_diff.total_seconds() / 3600
+
+        db.commit()
+        db.refresh(existing_start_entry)
+        return existing_start_entry
+
+    # If only start_time is provided, create a new entry
+    if start_datetime and not end_datetime:
+        # Check if there's already a start_time entry for this date
+        existing_start_entry = db.query(TimeEntry).filter(
+            TimeEntry.user_id == current_user.id,
+            TimeEntry.date == date,
+            TimeEntry.start_time.isnot(None),
+            TimeEntry.end_time.is_(None)
+        ).first()
+
+        if existing_start_entry:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="You already have an unclosed start time entry for this date. Please register an end time instead."
+            )
+
+    # Create new time entry (for start time only)
+    time_entry = TimeEntry(
+        user_id=current_user.id,
+        date=date,
+        start_time=start_datetime,
+        end_time=None,
+        total_hours=None,
+        photo_path=None,  # No photo for manual entries
+        extracted_text="Manual entry",
         is_confirmed=True
     )
 
