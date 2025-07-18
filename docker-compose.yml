@@ -1,17 +1,13 @@
-version: '3.8'
-
 services:
   backend:
     build: ./backend
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/smartponto
+      - DATABASE_URL=postgresql://smartponto_user:NWHHMMeRou1J2jC1KSD4lwtu1evKCgWU@dpg-d1rfft7diees73bsk4cg-a.oregon-postgres.render.com/smartponto
       - SECRET_KEY=your-secret-key-here
       - ALGORITHM=HS256
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
-    depends_on:
-      - db
     volumes:
       - ./backend/uploads:/app/uploads
 
@@ -24,16 +20,16 @@ services:
     depends_on:
       - backend
 
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: smartponto
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: smartponto
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:

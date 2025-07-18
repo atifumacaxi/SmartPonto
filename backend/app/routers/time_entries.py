@@ -140,7 +140,7 @@ async def confirm_time_entry(
         # Check if there's an existing start_time entry for this date
         existing_start_entry = db.query(TimeEntry).filter(
             TimeEntry.user_id == current_user.id,
-            func.strftime('%Y-%m-%d', TimeEntry.date) == entry_date.strftime('%Y-%m-%d'),
+            TimeEntry.date == entry_date,
             TimeEntry.start_time.isnot(None),
             TimeEntry.end_time.is_(None)
         ).first()
