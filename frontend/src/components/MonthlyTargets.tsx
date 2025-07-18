@@ -31,8 +31,8 @@ const MonthlyTargets: React.FC = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [targetHours, setTargetHours] = useState('');
-  const [startDay, setStartDay] = useState(1);
-  const [endDay, setEndDay] = useState(31);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -67,6 +67,16 @@ const MonthlyTargets: React.FC = () => {
     }
   };
 
+  // Helper functions to convert between dates and day numbers
+  const getDayFromDate = (dateString: string): number => {
+    if (!dateString) return 1;
+    return new Date(dateString).getDate();
+  };
+
+  const getDateFromDay = (year: number, month: number, day: number): string => {
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  };
+
   const handleCreateTarget = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -75,8 +85,8 @@ const MonthlyTargets: React.FC = () => {
       await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/`, {
         year: parseInt(year.toString()),
         month: parseInt(month.toString()),
-        start_day: parseInt(startDay.toString()),
-        end_day: parseInt(endDay.toString()),
+        start_day: getDayFromDate(startDate),
+        end_day: getDayFromDate(endDate),
         target_hours: parseFloat(targetHours)
       });
 
@@ -84,8 +94,8 @@ const MonthlyTargets: React.FC = () => {
       setYear(new Date().getFullYear());
       setMonth(new Date().getMonth() + 1);
       setTargetHours('');
-      setStartDay(1);
-      setEndDay(31);
+      setStartDate('');
+      setEndDate('');
 
       fetchTargets();
       fetchCurrentTarget();
@@ -117,14 +127,14 @@ const MonthlyTargets: React.FC = () => {
     try {
       await axios.put(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/${editingTarget.id}`, {
         target_hours: parseFloat(targetHours),
-        start_day: parseInt(startDay.toString()),
-        end_day: parseInt(endDay.toString()),
+        start_day: getDayFromDate(startDate),
+        end_day: getDayFromDate(endDate),
       });
 
       setEditingTarget(null);
       setTargetHours('');
-      setStartDay(1);
-      setEndDay(31);
+      setStartDate('');
+      setEndDate('');
 
       fetchTargets();
       fetchCurrentTarget();
@@ -176,15 +186,15 @@ const MonthlyTargets: React.FC = () => {
   const startEdit = (target: MonthlyTarget) => {
     setEditingTarget(target);
     setTargetHours(target.target_hours.toString());
-    setStartDay(target.start_day);
-    setEndDay(target.end_day);
+    setStartDate(getDateFromDay(target.year, target.month, target.start_day));
+    setEndDate(getDateFromDay(target.year, target.month, target.end_day));
   };
 
   const cancelEdit = () => {
     setEditingTarget(null);
     setTargetHours('');
-    setStartDay(1);
-    setEndDay(31);
+    setStartDate('');
+    setEndDate('');
   };
 
   if (loading) {
@@ -300,26 +310,22 @@ const MonthlyTargets: React.FC = () => {
             </div>
             <div className="flex gap-4">
               <div>
-                <label className="block text-sm font-medium">Start Day</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
                 <input
-                  type="number"
-                  min={1}
-                  max={31}
-                  value={startDay}
-                  onChange={e => setStartDay(Number(e.target.value))}
-                  className="mt-1 block w-20 border rounded px-2 py-1"
+                  type="date"
+                  value={startDate}
+                  onChange={e => setStartDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">End Day</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
                 <input
-                  type="number"
-                  min={1}
-                  max={31}
-                  value={endDay}
-                  onChange={e => setEndDay(Number(e.target.value))}
-                  className="mt-1 block w-20 border rounded px-2 py-1"
+                  type="date"
+                  value={endDate}
+                  onChange={e => setEndDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -366,26 +372,22 @@ const MonthlyTargets: React.FC = () => {
                       </div>
                       <div className="flex gap-2">
                         <div>
-                          <label className="block text-sm font-medium">Start Day</label>
+                          <label className="block text-sm font-medium">Start Date</label>
                           <input
-                            type="number"
-                            min={1}
-                            max={31}
-                            value={startDay}
-                            onChange={e => setStartDay(Number(e.target.value))}
-                            className="mt-1 block w-20 border rounded px-2 py-1"
+                            type="date"
+                            value={startDate}
+                            onChange={e => setStartDate(e.target.value)}
+                            className="mt-1 block w-32 border rounded px-2 py-1"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium">End Day</label>
+                          <label className="block text-sm font-medium">End Date</label>
                           <input
-                            type="number"
-                            min={1}
-                            max={31}
-                            value={endDay}
-                            onChange={e => setEndDay(Number(e.target.value))}
-                            className="mt-1 block w-20 border rounded px-2 py-1"
+                            type="date"
+                            value={endDate}
+                            onChange={e => setEndDate(e.target.value)}
+                            className="mt-1 block w-32 border rounded px-2 py-1"
                             required
                           />
                         </div>
@@ -414,7 +416,7 @@ const MonthlyTargets: React.FC = () => {
                         {monthNames[target.month - 1]} {target.year}
                       </span>
                       <span className="ml-4 text-gray-600">
-                        {target.start_day} - {target.end_day}
+                        {getDateFromDay(target.year, target.month, target.start_day)} to {getDateFromDay(target.year, target.month, target.end_day)}
                       </span>
                       <span className="ml-4 text-gray-600">{target.target_hours} hours</span>
                     </div>

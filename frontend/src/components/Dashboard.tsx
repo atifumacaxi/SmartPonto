@@ -154,7 +154,7 @@ const Dashboard: React.FC = () => {
                   Target Progress - {monthNames[currentTarget.target.month - 1]} {currentTarget.target.year}
                 </h2>
                 <p className="text-sm text-gray-600 mt-1">
-                  Custom Range: {currentTarget.target.start_day} - {currentTarget.target.end_day}
+                  Custom Range: {new Date(currentTarget.target.year, currentTarget.target.month - 1, currentTarget.target.start_day).toLocaleDateString()} to {new Date(currentTarget.target.year, currentTarget.target.month - 1, currentTarget.target.end_day).toLocaleDateString()}
                 </p>
               </div>
               <Link

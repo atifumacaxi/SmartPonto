@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: smartponto-backend
+    env: python
+    pythonVersion: 3.10.13
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    rootDir: backend
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: https://smartponto-frontend.vercel.app,http://localhost:3000
+      - key: DATABASE_URL
+        value: YOUR_POSTGRES_INTERNAL_URL_HERE

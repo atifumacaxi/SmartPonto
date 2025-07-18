@@ -15,11 +15,14 @@ class MonthlyTargetService:
 
         last_day = calendar.monthrange(year, month)[1]
 
+        # Validate start_day
         if not (1 <= target.start_day <= last_day):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Start day must be between 1 and {last_day} for month {month}"
             )
+
+        # Validate end_day - allow it to be up to last_day
         if not (1 <= target.end_day <= last_day):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -27,14 +30,26 @@ class MonthlyTargetService:
             )
 
         start_date = date(year, month, target.start_day)
+
         # If end_day < start_day, the range crosses into the next month
         if target.end_day >= target.start_day:
-            end_date = date(year, month, target.end_day + 1)  # +1 to make it inclusive
+            # For same month, end_date should be the next day after end_day
+            # But we need to handle the case where end_day is the last day of the month
+            if target.end_day == last_day:
+                # If end_day is the last day, set end_date to first day of next month
+                if month == 12:
+                    end_date = date(year + 1, 1, 1)
+                else:
+                    end_date = date(year, month + 1, 1)
+            else:
+                end_date = date(year, month, target.end_day + 1)
         else:
+            # Cross-month range
             if month == 12:
                 end_date = date(year + 1, 1, target.end_day + 1)
             else:
                 end_date = date(year, month + 1, target.end_day + 1)
+
         return start_date, end_date
 
     @staticmethod
