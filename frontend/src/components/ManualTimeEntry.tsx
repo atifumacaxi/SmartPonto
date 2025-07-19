@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+// Manual Time Entry Component - Force rebuild for Vercel deployment
 interface ManualTimeEntryProps {
   onEntryAdded: () => void;
   onClose: () => void;
