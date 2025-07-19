@@ -17,6 +17,7 @@ class UserLogin(BaseModel):
 
 class User(UserBase):
     id: int
+    role_type: str = "normal"
     created_at: datetime
     updated_at: Optional[datetime] = None
 

@@ -1,178 +1,175 @@
-# SmartPonto - Time Tracking App
+# SmartPonto - Sistema de Controle de Ponto
 
-A modern time tracking application that uses OCR to extract work hours from time cards and invoices. Built with FastAPI (Python) backend and React (TypeScript) frontend.
+Sistema completo de controle de ponto com captura de fotos, autenticação e dashboard administrativo.
 
-## Features
+## 🚀 Funcionalidades
 
-- 📸 **Photo Capture**: Take photos of time cards or upload images
-- 🔍 **OCR Processing**: Automatically extract dates and times using Tesseract OCR
-- ⏰ **Time Tracking**: Register start and end times for work sessions
-- 📊 **Monthly Targets**: Set and track monthly work hour goals
-- 📈 **Dashboard**: View daily and monthly summaries
-- 🗂️ **Time Entries**: Manage and delete time entries
-- 🔐 **User Authentication**: Secure login system
+- **Controle de Ponto**: Registro de entrada e saída com foto
+- **Autenticação JWT**: Sistema seguro de login
+- **Dashboard Admin**: Gerenciamento de usuários e visualização de entradas
+- **Dashboard Boss**: Visualização de entradas de todos os usuários
+- **Upload de Fotos**: Captura via webcam ou upload de arquivo
+- **Visualização de Fotos**: Modal com zoom e redimensionamento
+- **Controle de Acesso**: Sistema de roles (normal, boss, admin)
 
-## Quick Start
+## 🛠️ Tecnologias
 
-### Local Development
+- **Backend**: FastAPI, SQLAlchemy, PostgreSQL
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **Containerização**: Docker, Docker Compose
+- **Autenticação**: JWT
+- **Upload**: Webcam + File Upload
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd SmartPonto
-   ```
+## 📋 Pré-requisitos
 
-2. **Start with Docker**
-   ```bash
-   docker-compose up --build
-   ```
+- Docker
+- Docker Compose
+- Git
 
-3. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
-   - API Documentation: http://localhost:8000/docs
+## 🚀 Deploy Local
 
-### Production Deployment
+### 1. Clone o repositório
+```bash
+git clone <seu-repositorio>
+cd SmartPonto
+```
 
-**Recommended: Render.com (Free Tier)**
+### 2. Configure as variáveis de ambiente
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env
 
-1. **Prepare for deployment**
+# Edite o arquivo .env com suas configurações
+nano .env
+```
+
+### 3. Execute o deploy
+```bash
+# Deploy de desenvolvimento
+docker compose up -d
+
+# OU deploy de produção
+./deploy.sh
+```
+
+### 4. Acesse a aplicação
+- **Frontend**: http://localhost:3000 (dev) ou http://localhost (prod)
+- **Backend**: http://localhost:8000
+
+## 🔧 Configuração de Produção
+
+### Variáveis de Ambiente
+
+Crie um arquivo `.env` com as seguintes variáveis:
+
+```env
+# Backend
+SECRET_KEY=sua-chave-secreta-super-segura
+DATABASE_URL=postgresql://user:password@host:port/database
+
+# Frontend
+REACT_APP_API_URL=https://seu-dominio.com
+```
+
+### Deploy em Produção
+
+1. **Configure o domínio** no arquivo `.env`
+2. **Execute o script de deploy**:
    ```bash
    ./deploy.sh
    ```
 
-2. **Follow the deployment guide**
-   - Read [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions
-   - Deploy to Render.com with free PostgreSQL database
-   - Get HTTPS and custom domain support
+## 👥 Usuários Padrão
 
-## Tech Stack
+### Admin
+- **Email**: admin@smartponto.com
+- **Senha**: admin123
+- **Role**: admin
 
-### Backend
-- **FastAPI** - Modern Python web framework
-- **SQLAlchemy** - Database ORM
-- **PostgreSQL** - Production database (SQLite for development)
-- **Tesseract OCR** - Image text extraction
-- **OpenCV** - Image processing
-- **JWT** - Authentication
+### Boss
+- **Email**: boss@smartponto.com
+- **Senha**: boss123
+- **Role**: boss
 
-### Frontend
-- **React** - UI framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **Axios** - HTTP client
-- **React Router** - Navigation
+### Usuário Normal
+- **Email**: user@smartponto.com
+- **Senha**: user123
+- **Role**: normal
 
-### Infrastructure
-- **Docker** - Containerization
-- **Render.com** - Hosting platform
-- **PostgreSQL** - Database
-
-## Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 SmartPonto/
-├── backend/                 # FastAPI backend
+├── backend/                 # API FastAPI
 │   ├── app/
-│   │   ├── models.py       # Database models
-│   │   ├── schemas.py      # Pydantic schemas
-│   │   ├── auth.py         # Authentication
-│   │   ├── ocr_service.py  # OCR processing
-│   │   └── routers/        # API routes
-│   ├── Dockerfile          # Backend container
-│   └── requirements.txt    # Python dependencies
-├── frontend/               # React frontend
+│   │   ├── routers/        # Endpoints da API
+│   │   ├── models/         # Modelos SQLAlchemy
+│   │   ├── schemas/        # Schemas Pydantic
+│   │   └── uploads/        # Fotos enviadas
+│   ├── Dockerfile
+│   └── requirements.txt
+├── frontend/               # App React
 │   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── pages/          # Page components
-│   │   └── services/       # API services
-│   ├── Dockerfile          # Frontend container
-│   └── package.json        # Node dependencies
-├── docker-compose.yml      # Local development
-├── deploy.sh              # Deployment script
-└── DEPLOYMENT.md          # Deployment guide
+│   │   ├── components/     # Componentes React
+│   │   ├── contexts/       # Contextos (Auth, Permissions)
+│   │   └── types/          # Tipos TypeScript
+│   ├── Dockerfile
+│   └── package.json
+├── docker-compose.yml      # Configuração de desenvolvimento
+├── docker-compose.prod.yml # Configuração de produção
+└── deploy.sh              # Script de deploy
 ```
 
-## API Endpoints
+## 🔒 Segurança
 
-### Authentication
-- `POST /auth/login` - User login
-- `POST /auth/register` - User registration
+- **JWT Authentication**: Tokens seguros com expiração
+- **Role-based Access Control**: Controle de acesso por função
+- **File Upload Security**: Validação de tipos de arquivo
+- **Environment Variables**: Configurações sensíveis em variáveis de ambiente
 
-### Time Entries
-- `POST /time-entries/upload` - Upload photo for OCR
-- `POST /time-entries/confirm` - Confirm time entry
-- `GET /time-entries/monthly` - Monthly summary
-- `GET /time-entries/all` - All entries for month
-- `DELETE /time-entries/{id}` - Delete entry
+## 📊 Monitoramento
 
-### Monthly Targets
-- `GET /monthly-targets/{year}/{month}` - Get target
-- `POST /monthly-targets` - Create target
-- `PUT /monthly-targets/{id}` - Update target
-
-## Environment Variables
-
-### Backend
-```env
-DATABASE_URL=postgresql://user:password@host:port/db
-SECRET_KEY=your-secret-key
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-```
-
-### Frontend
-```env
-REACT_APP_API_URL=http://localhost:8000
-```
-
-## Development
-
-### Backend Development
+### Logs
 ```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+# Logs do frontend
+docker compose logs frontend
+
+# Logs do backend
+docker compose logs backend
+
+# Todos os logs
+docker compose logs -f
 ```
 
-### Frontend Development
+### Status dos Containers
 ```bash
-cd frontend
-npm install
-npm start
+docker compose ps
 ```
 
-### Database Migrations
-```bash
-cd backend
-alembic revision --autogenerate -m "Description"
-alembic upgrade head
-```
+## 🐛 Troubleshooting
 
-## Deployment Options
+### Problemas Comuns
 
-### Free Tier
-- **Render.com** - Complete solution with PostgreSQL
-- **Railway** - Easy deployment with database
-- **Vercel + Railway** - Frontend + Backend
+1. **Fotos não carregam**
+   - Verifique se a pasta `uploads` existe
+   - Confirme as permissões de arquivo
 
-### Paid Options
-- **AWS** - Scalable cloud infrastructure
-- **DigitalOcean** - VPS with managed database
-- **Heroku** - Platform as a Service
+2. **Erro de conexão com banco**
+   - Verifique a `DATABASE_URL` no `.env`
+   - Confirme se o banco está acessível
 
-## Contributing
+3. **Frontend não atualiza**
+   - Limpe o cache do navegador
+   - Reconstrua o container: `docker compose build frontend`
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+## 📝 Licença
 
-## License
+Este projeto está sob a licença MIT.
 
-This project is licensed under the MIT License.
+## 🤝 Contribuição
 
-## Support
-
-For deployment help, see [DEPLOYMENT.md](DEPLOYMENT.md) or create an issue in the repository.
+1. Fork o projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request

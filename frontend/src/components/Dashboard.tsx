@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ManualTimeEntry from './ManualTimeEntry';
+import TestManualEntry from './TestManualEntry';
+import AdminDashboard from './AdminDashboard';
+import BossTimeEntries from './BossTimeEntries';
+import { useAuth } from '../contexts/AuthContext';
+import { usePermissions } from '../hooks/usePermissions';
 
 interface DailySummary {
   date: string;
@@ -32,6 +37,9 @@ interface MonthlyTargetWithProgress {
 }
 
 const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+  const { canViewAdminDashboard, hasPermission } = usePermissions();
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'entries'>('dashboard');
   const [monthlySummary, setMonthlySummary] = useState<MonthlySummary | null>(null);
   const [currentTarget, setCurrentTarget] = useState<MonthlyTargetWithProgress | null>(null);
   const [loading, setLoading] = useState(true);
@@ -101,12 +109,59 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  // If user can view admin dashboard, show it with tabs
+  if (canViewAdminDashboard) {
+    return (
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard Administrativo</h1>
+          <p className="mt-2 text-gray-600">Gerencie usuários e visualize dados da equipe</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="border-b border-gray-200 mb-6">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'dashboard'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Resumo Geral
+            </button>
+            {hasPermission('view_all_time_entries') && (
+              <button
+                onClick={() => setActiveTab('entries')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'entries'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Visualizar Entradas
+              </button>
+            )}
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'dashboard' && <AdminDashboard />}
+        {activeTab === 'entries' && hasPermission('view_all_time_entries') && <BossTimeEntries />}
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="mt-2 text-gray-600">Track your work hours and productivity</p>
       </div>
+
+      {/* Test Manual Entry Component */}
+      <TestManualEntry />
 
       {/* Manual Time Entry Component */}
       <ManualTimeEntry

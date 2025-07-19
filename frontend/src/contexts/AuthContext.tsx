@@ -6,15 +6,29 @@ interface User {
   email: string;
   username: string;
   full_name?: string;
+  role_type: string;
+}
+
+interface UserPermissions {
+  user_id: number;
+  role: string;
+  role_info: {
+    value: string;
+    label: string;
+    description: string;
+  };
+  permissions: string[];
 }
 
 interface AuthContextType {
   user: User | null;
+  permissions: UserPermissions | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, username: string, password: string, fullName?: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  hasPermission: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,6 +47,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [permissions, setPermissions] = useState<UserPermissions | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Check if user is already logged in on app start
@@ -42,10 +57,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Set default authorization header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // Verify token by getting user profile
-      axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/profile`)
-        .then(response => {
-          setUser(response.data);
+      // Verify token by getting user profile and permissions
+      Promise.all([
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/profile`),
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/permissions/my-permissions`)
+      ])
+        .then(([userResponse, permissionsResponse]) => {
+          setUser(userResponse.data);
+          setPermissions(permissionsResponse.data);
         })
         .catch(() => {
           // Token is invalid, remove it
@@ -77,9 +96,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('token', access_token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
 
-      // Get user profile
-      const userResponse = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/profile`);
+      // Get user profile and permissions
+      const [userResponse, permissionsResponse] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/profile`),
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/permissions/my-permissions`)
+      ]);
       setUser(userResponse.data);
+      setPermissions(permissionsResponse.data);
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Login failed');
     }
@@ -102,15 +125,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
+    setPermissions(null);
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    return permissions?.permissions.includes(permission) || false;
   };
 
   const value: AuthContextType = {
     user,
+    permissions,
     isAuthenticated: !!user,
     login,
     register,
     logout,
-    loading
+    loading,
+    hasPermission
   };
 
   return (

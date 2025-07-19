@@ -1,6 +1,9 @@
 # Build stage for OpenCV and heavy dependencies
 FROM python:3.10-slim as builder
 
+# Cache busting - change this to force rebuild
+ARG CACHEBUST=1
+
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -46,6 +49,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Production stage
 FROM python:3.10-slim
+
+# Cache busting for production stage too
+ARG CACHEBUST=1
 
 # Install only essential runtime dependencies
 RUN apt-get update && apt-get install -y \

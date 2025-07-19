@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, time_entries, users, monthly_targets
+from app.routers import auth, time_entries, users, monthly_targets, admin, permissions
 from app.database import engine
 from app.database import Base
 import os
@@ -35,6 +35,8 @@ app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(time_entries.router, prefix="/time-entries", tags=["Time Entries"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(monthly_targets.router, prefix="/monthly-targets", tags=["Monthly Targets"])
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])
+app.include_router(permissions.router, prefix="/permissions", tags=["Permissions"])
 
 @app.get("/")
 async def root():
