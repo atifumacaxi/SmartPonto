@@ -9,7 +9,8 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-dotenv==1.0.0
 psycopg2-binary==2.9.9
-opencv-python==4.8.1.78
+# Use opencv-python-headless for smaller size (no GUI dependencies)
+opencv-python-headless==4.8.1.78
 pytesseract==0.3.10
 pillow==10.1.0
 numpy==1.24.3
