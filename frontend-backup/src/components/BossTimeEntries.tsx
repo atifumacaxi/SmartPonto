@@ -29,7 +29,7 @@ interface TimeEntriesResponse {
 const BossTimeEntries: React.FC = () => {
   console.log('BossTimeEntries component loaded!');
 
-  const { } = useAuth();
+  const { user } = useAuth();
   const { hasPermission } = usePermissions();
   const [entries, setEntries] = useState<TimeEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +107,11 @@ const BossTimeEntries: React.FC = () => {
     return new Date(dateStr).toLocaleDateString('pt-BR');
   };
 
-
+  const getPhotoUrl = (photoPath: string | null) => {
+    if (!photoPath) return null;
+    const filename = photoPath.split('/').pop();
+    return `${API_URL}/admin/photos/${filename || ''}`;
+  };
 
     const loadPhoto = async (photoPath: string, entryId: number) => {
     if (!photoPath) return;

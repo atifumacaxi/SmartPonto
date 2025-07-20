@@ -32,7 +32,7 @@ interface AllUsersSummary {
 }
 
 const AdminDashboard: React.FC = () => {
-  const { } = useAuth();
+  const { user } = useAuth();
   const { canManageUserRoles } = usePermissions();
   const [allUsersSummary, setAllUsersSummary] = useState<AllUsersSummary | null>(null);
   const [loading, setLoading] = useState(true);

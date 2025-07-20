@@ -13,7 +13,7 @@ interface User {
 }
 
 const UserManagement: React.FC = () => {
-  const { } = useAuth();
+  const { user } = useAuth();
   const { canManageUserRoles } = usePermissions();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
