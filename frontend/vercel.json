@@ -1,13 +1,13 @@
 {
   "version": 2,
+  "buildCommand": "npm run build:vercel",
+  "installCommand": "npm ci --legacy-peer-deps --no-audit",
   "builds": [
     {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build",
-        "installCommand": "npm ci --legacy-peer-deps --no-audit",
-        "buildCommand": "CI=false GENERATE_SOURCEMAP=false npm run build"
+        "distDir": "build"
       }
     }
   ],

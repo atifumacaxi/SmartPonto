@@ -1,4 +1,4 @@
 Build Date: 2024-07-19
-Version: 0.1.8
+Version: 0.1.11
 Features: Boss Dashboard, Photo Modal, Admin Panel
 Cache Bust: true

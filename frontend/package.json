@@ -1,6 +1,6 @@
 {
   "name": "smartponto-frontend",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "private": true,
   "engines": {
     "node": "18.x",
@@ -29,6 +29,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build:vercel": "npm ci --legacy-peer-deps --no-audit && GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
