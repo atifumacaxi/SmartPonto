@@ -109,6 +109,14 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  // Debug logs
+  console.log('Dashboard Debug:', {
+    user: user,
+    canViewAdminDashboard,
+    hasPermission: hasPermission('view_all_time_entries'),
+    permissions: usePermissions()
+  });
+
   // If user can view admin dashboard, show it with tabs
   if (canViewAdminDashboard) {
     return (
