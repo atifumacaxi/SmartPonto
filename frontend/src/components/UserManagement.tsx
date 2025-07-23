@@ -29,7 +29,7 @@ const UserManagement: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/admin/users`
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/admin/users`
       );
       setUsers(response.data);
       setError('');
@@ -45,7 +45,7 @@ const UserManagement: React.FC = () => {
     try {
       setUpdatingUser(userId);
       await axios.put(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/admin/users/${userId}/role?role_type=${newRole}`
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/admin/users/${userId}/role?role_type=${newRole}`
       );
 
       // Update local state

@@ -60,17 +60,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Verify token by getting user profile and permissions
       Promise.all([
-        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/profile`),
-        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/permissions/my-permissions`)
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/users/profile`),
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/permissions/my-permissions`)
       ])
         .then(([userResponse, permissionsResponse]) => {
           setUser(userResponse.data);
           setPermissions(permissionsResponse.data);
         })
         .catch(() => {
-          // Token is invalid, remove it
+          // Token is invalid, remove it and clear state
           localStorage.removeItem('token');
           delete axios.defaults.headers.common['Authorization'];
+          setUser(null);
+          setPermissions(null);
         })
         .finally(() => {
           setLoading(false);
@@ -82,28 +84,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('Starting login process...');
       // Create URL-encoded form data for OAuth2 password flow
       const formData = new URLSearchParams();
       formData.append('username', email);
       formData.append('password', password);
 
-      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/auth/login`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/auth/login`, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
 
+      console.log('Login response received:', response.data);
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
 
+      console.log('Fetching user profile and permissions...');
       // Get user profile and permissions
       const [userResponse, permissionsResponse] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/profile`),
-        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/permissions/my-permissions`)
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/users/profile`),
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/permissions/my-permissions`)
       ]);
+
+      console.log('User profile:', userResponse.data);
+      console.log('Permissions:', permissionsResponse.data);
+
       setUser(userResponse.data);
       setPermissions(permissionsResponse.data);
+      console.log('Login completed successfully');
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Login failed');
     }
@@ -111,7 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (email: string, username: string, password: string, fullName?: string) => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/auth/register`, {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/auth/register`, {
         email,
         username,
         password,

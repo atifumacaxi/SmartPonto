@@ -29,7 +29,7 @@ const TimeEntries: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/all?year=${selectedYear}&month=${selectedMonth}`
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/all?year=${selectedYear}&month=${selectedMonth}`
       );
 
       setTimeEntries(response.data);
@@ -50,7 +50,7 @@ const TimeEntries: React.FC = () => {
     setDeletingId(entryId);
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/${entryId}`
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/${entryId}`
       );
 
       // Remove the deleted entry from the list

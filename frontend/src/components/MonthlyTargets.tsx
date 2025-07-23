@@ -46,7 +46,7 @@ const MonthlyTargets: React.FC = () => {
 
   const fetchTargets = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/monthly-targets/`);
       setTargets(response.data);
     } catch (err: any) {
       console.error('Error fetching targets:', err);
@@ -55,7 +55,7 @@ const MonthlyTargets: React.FC = () => {
 
   const fetchCurrentTarget = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/current`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/monthly-targets/current`);
       setCurrentTarget(response.data);
     } catch (err: any) {
       // No target set for current month is not an error
@@ -82,7 +82,7 @@ const MonthlyTargets: React.FC = () => {
     setError('');
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/`, {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/monthly-targets/`, {
         year: parseInt(year.toString()),
         month: parseInt(month.toString()),
         start_day: getDayFromDate(startDate),
@@ -125,7 +125,7 @@ const MonthlyTargets: React.FC = () => {
     if (!editingTarget) return;
 
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/${editingTarget.id}`, {
+      await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/monthly-targets/${editingTarget.id}`, {
         target_hours: parseFloat(targetHours),
         start_day: getDayFromDate(startDate),
         end_day: getDayFromDate(endDate),
@@ -161,7 +161,7 @@ const MonthlyTargets: React.FC = () => {
     if (!window.confirm('Are you sure you want to delete this target?')) return;
 
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/${targetId}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/monthly-targets/${targetId}`);
       fetchTargets();
       fetchCurrentTarget();
     } catch (err: any) {

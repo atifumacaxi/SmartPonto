@@ -27,7 +27,7 @@ const PhotoCapture: React.FC = () => {
 
   const fetchUnclosedEntries = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/unclosed`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/unclosed`);
       setUnclosedDates(response.data.map((entry: any) => entry.date));
     } catch (err: any) {
       console.error('Error fetching unclosed entries:', err);
@@ -144,7 +144,7 @@ const PhotoCapture: React.FC = () => {
 
       // Upload photo and get OCR result
       const uploadResponse = await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/upload`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/upload`,
         formData,
         {
           headers: {
@@ -237,7 +237,7 @@ const PhotoCapture: React.FC = () => {
       formData.append('extracted_text', ocrResult.extracted_text);
 
       await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/confirm`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/confirm`,
         formData
       );
 

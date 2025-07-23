@@ -54,7 +54,7 @@ const AdminDashboard: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/admin/all-users-summary?year=${selectedYear}&month=${selectedMonth}`
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/admin/all-users-summary?year=${selectedYear}&month=${selectedMonth}`
       );
       setAllUsersSummary(response.data);
       setError('');

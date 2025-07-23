@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/monthly?year=${selectedYear}&month=${selectedMonth}`
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/monthly?year=${selectedYear}&month=${selectedMonth}`
       );
       setMonthlySummary(response.data);
       setError('');
@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
 
   const fetchCurrentTarget = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/monthly-targets/${selectedYear}/${selectedMonth}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/monthly-targets/${selectedYear}/${selectedMonth}`);
       setCurrentTarget(response.data);
     } catch (err: any) {
       // No target set for selected month is not an error

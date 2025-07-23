@@ -26,28 +26,40 @@ function AppContent() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/" element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            } />
-            <Route path="/capture" element={
-              <PrivateRoute>
-                <PhotoCapture />
-              </PrivateRoute>
-            } />
-            <Route path="/profile" element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            } />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={
+            <PrivateRoute>
+              <div>
+                <Navbar />
+                <main className="container mx-auto px-4 py-8">
+                  <Dashboard />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+          <Route path="/capture" element={
+            <PrivateRoute>
+              <div>
+                <Navbar />
+                <main className="container mx-auto px-4 py-8">
+                  <PhotoCapture />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+          <Route path="/profile" element={
+            <PrivateRoute>
+              <div>
+                <Navbar />
+                <main className="container mx-auto px-4 py-8">
+                  <Profile />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+        </Routes>
       </div>
     </Router>
   );

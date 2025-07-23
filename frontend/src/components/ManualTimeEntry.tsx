@@ -35,7 +35,7 @@ const ManualTimeEntry: React.FC<ManualTimeEntryProps> = ({ onEntryAdded, onClose
     try {
       // Create start time entry
       await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/manual`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/manual`,
         {
           date: entryData.date,
           start_time: entryData.start_time,
@@ -50,7 +50,7 @@ const ManualTimeEntry: React.FC<ManualTimeEntryProps> = ({ onEntryAdded, onClose
 
       // Create end time entry
       await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/time-entries/manual`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/time-entries/manual`,
         {
           date: entryData.date,
           start_time: null,
