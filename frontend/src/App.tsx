@@ -5,6 +5,8 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import PhotoCapture from './components/PhotoCapture';
 import Profile from './components/Profile';
+import MonthlyTargets from './components/MonthlyTargets';
+import TimeEntries from './components/TimeEntries';
 import Navbar from './components/Navbar';
 import { useAuth } from './contexts/AuthContext';
 
@@ -55,6 +57,26 @@ function AppContent() {
                 <Navbar />
                 <main className="container mx-auto px-4 py-8">
                   <Profile />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+          <Route path="/targets" element={
+            <PrivateRoute>
+              <div>
+                <Navbar />
+                <main className="container mx-auto px-4 py-8">
+                  <MonthlyTargets />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+          <Route path="/entries" element={
+            <PrivateRoute>
+              <div>
+                <Navbar />
+                <main className="container mx-auto px-4 py-8">
+                  <TimeEntries />
                 </main>
               </div>
             </PrivateRoute>
