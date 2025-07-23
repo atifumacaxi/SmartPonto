@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ManualTimeEntry from './ManualTimeEntry';
-import TestManualEntry from './TestManualEntry';
 import AdminDashboard from './AdminDashboard';
 import BossTimeEntries from './BossTimeEntries';
 import { useAuth } from '../contexts/AuthContext';
@@ -167,9 +166,6 @@ const Dashboard: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="mt-2 text-gray-600">Track your work hours and productivity</p>
       </div>
-
-      {/* Test Manual Entry Component */}
-      <TestManualEntry />
 
       {/* Manual Time Entry Component */}
       <ManualTimeEntry
